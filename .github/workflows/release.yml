@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
@@ -38,21 +38,21 @@ jobs:
 
     # Upload raw build output for the packaging job
     - name: Upload Windows build output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-build-output
         path: publish/win-x64/
         retention-days: 1
         
     - name: Upload Linux build output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: linux-build-output
         path: publish/linux-x64/
         retention-days: 1
         
     - name: Upload macOS build output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macos-build-output
         path: publish/osx-x64/
@@ -65,23 +65,23 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     # Download build outputs from the build job
     - name: Download Windows build
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: windows-build-output
         path: publish/win-x64/
         
     - name: Download Linux build
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: linux-build-output
         path: publish/linux-x64/
         
     - name: Download macOS build
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: macos-build-output
         path: publish/osx-x64/
@@ -98,21 +98,21 @@ jobs:
 
     # Upload artifacts for download from the Actions tab
     - name: Upload Windows artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: BCFileDecryptor-windows
         path: BCFileDecryptor-windows.zip
         retention-days: 30
 
     - name: Upload Linux artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: BCFileDecryptor-linux
         path: BCFileDecryptor-linux.zip
         retention-days: 30
 
     - name: Upload macOS artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: BCFileDecryptor-macos
         path: BCFileDecryptor-macos.zip
