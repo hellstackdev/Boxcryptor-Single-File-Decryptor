@@ -1,7 +1,7 @@
 # Boxcryptor Single File Decryptor
 
-[![.NET CI](https://github.com/USERNAME/boxcryptor-single-file-decryptor/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/USERNAME/boxcryptor-single-file-decryptor/actions/workflows/dotnet-ci.yml)
-[![.NET CD - Release](https://github.com/USERNAME/boxcryptor-single-file-decryptor/actions/workflows/dotnet-release.yml/badge.svg)](https://github.com/USERNAME/boxcryptor-single-file-decryptor/actions/workflows/dotnet-release.yml)
+[![.NET CI](https://github.com/hellstackdev/boxcryptor-single-file-decryptor/actions/workflows/main.yml/badge.svg)](https://github.com/hellstackdev/boxcryptor-single-file-decryptor/actions/workflows/main.yml)
+[![.NET CD - Release](https://github.com/hellstackdev/boxcryptor-single-file-decryptor/actions/workflows/release.yml/badge.svg)](https://github.com/hellstackdev/boxcryptor-single-file-decryptor/actions/workflows/release.yml)
 
 This project provides a command-line utility for decrypting Boxcryptor-encrypted files. It's built with .NET 8.0 and requires the Microsoft.AspNetCore.Cryptography.KeyDerivation package.
 
