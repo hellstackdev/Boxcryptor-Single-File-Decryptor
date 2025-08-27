@@ -1,0 +1,76 @@
+name: .NET CD - Release
+
+# This workflow runs manually or when a new release is created
+on:
+  workflow_dispatch:  # Allows manual triggering
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    # Create binaries for multiple platforms
+    - name: Publish for Windows
+      run: dotnet publish BCFileDecryptor/BCFileDecryptor.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish/win-x64
+
+    - name: Publish for Linux
+      run: dotnet publish BCFileDecryptor/BCFileDecryptor.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish/linux-x64
+
+    - name: Publish for macOS
+      run: dotnet publish BCFileDecryptor/BCFileDecryptor.csproj -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish/osx-x64
+
+    # Create zip archives for each platform
+    - name: Zip Windows build
+      run: cd publish/win-x64 && zip -r ../../BCFileDecryptor-windows.zip *
+
+    - name: Zip Linux build
+      run: cd publish/linux-x64 && zip -r ../../BCFileDecryptor-linux.zip *
+      
+    - name: Zip macOS build
+      run: cd publish/osx-x64 && zip -r ../../BCFileDecryptor-macos.zip *
+
+    # Upload artifacts for download from the Actions tab
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: BCFileDecryptor-windows
+        path: BCFileDecryptor-windows.zip
+        retention-days: 30
+
+    - name: Upload Linux artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: BCFileDecryptor-linux
+        path: BCFileDecryptor-linux.zip
+        retention-days: 30
+
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: BCFileDecryptor-macos
+        path: BCFileDecryptor-macos.zip
+        retention-days: 30
+        
+    # If this was triggered by a release, attach the binaries to the release
+    - name: Upload binaries to release
+      if: github.event_name == 'release'
+      uses: AButler/upload-release-assets@v2.0
+      with:
+        files: 'BCFileDecryptor-*.zip'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}

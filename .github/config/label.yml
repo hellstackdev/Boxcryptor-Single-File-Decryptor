@@ -1,0 +1,58 @@
+Actions:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**/*"]
+
+Test:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "src/**/*.spec.js",
+            "src/**/*.spec.ts",
+            "src/**/*.test.js",
+            "src/**/*.test.ts",
+            "src/**/__tests__/**/*",
+            "__tests__/**/*",
+            "test/**/*",
+          ]
+
+Documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "docs/**/*",
+            "doc/**/*",
+            ".docs/**/*",
+            ".doc/**/*",
+            ".documentation/**/*",
+          ]
+
+Configuration:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            ".idea/**/*",
+            ".github/**/*",
+            ".vscode/**/*",
+            ".husky/**/*",
+            ".lintstagedrc",
+            ".prettierrc",
+            ".eslintrc",
+            ".editorconfig",
+            ".gitignore",
+            ".gitattributes",
+            ".npmignore",
+            ".npmrc",
+            "*.config.js",
+            "*.config.ts",
+          ]
+
+Dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          [
+            "yarn.lock",
+            "package.json",
+            "package-lock.json",
+            "pnpm-workspace.yaml",
+            "pnpm-lock.yaml",
+          ]
