@@ -111,23 +111,42 @@ These tests ensure:
 
 ## Continuous Integration/Deployment
 
-This project uses GitHub Actions with separate workflows for CI and CD:
+This project uses GitHub Actions with separate workflows for CI and CD, each with multiple jobs:
 
 ### CI Workflow (.NET CI)
-- Automatically runs on each push and pull request
-- Builds the project using .NET 8.0
-- Runs all unit tests
-- Ensures code quality across platforms
+The CI workflow has two jobs that run sequentially:
+
+1. **Build Job**
+   - Automatically runs on each push and pull request
+   - Builds the project using .NET 8.0
+   - Uploads build artifacts for the test job
+
+2. **Test Job**
+   - Runs after the build job completes successfully
+   - Downloads the build artifacts
+   - Runs all unit tests
+   - Ensures code quality across platforms
 
 ### CD Workflow (.NET CD - Release)
-- Triggered manually or when a new release is created on GitHub
-- Generates standalone executables for Windows, Linux, and macOS
-- Creates zip archives of the builds
-- Uploads build artifacts for easy downloading
-- Attaches the binaries to GitHub releases (when triggered by a release)
+The CD workflow also has two jobs that run sequentially:
+
+1. **Build Release Job**
+   - Triggered manually or when a new release is created on GitHub
+   - Builds the project using .NET 8.0
+   - Generates standalone executables for Windows, Linux, and macOS
+   - Uploads build outputs for the packaging job
+
+2. **Package Job**
+   - Runs after the build release job completes
+   - Downloads the build outputs
+   - Creates zip archives of the builds
+   - Uploads build artifacts for easy downloading
+   - Attaches the binaries to GitHub releases (when triggered by a release)
 
 This separation allows for:
 - Fast feedback on code changes via the CI pipeline
+- Better parallelization and resource utilization
+- Clear separation of concerns between building and testing/packaging
 - Controlled releases via the manual CD pipeline
 - Clean, versioned releases with properly packaged artifacts
 

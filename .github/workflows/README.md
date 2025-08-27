@@ -2,33 +2,47 @@
 
 This document explains how to use the GitHub Actions workflows in this repository.
 
-## CI Workflow (`dotnet-ci.yml`)
+## CI Workflow (`main.yml`)
 
 This workflow automatically runs on every push to the `main` or `master` branch and on pull requests to these branches.
 
-### What it does:
-1. Checks out the repository
-2. Sets up .NET 8.0
-3. Restores dependencies
-4. Builds the project in Release configuration
-5. Runs all tests
+### Jobs:
+
+#### 1. Build Job
+- Checks out the repository
+- Sets up .NET 8.0
+- Restores dependencies
+- Builds the project in Release configuration
+- Caches and uploads build artifacts for the test job
+
+#### 2. Test Job
+- Runs after the build job completes
+- Downloads the build artifacts
+- Runs all tests against the built assemblies
 
 ### How to use it:
 - You don't need to do anything special to trigger this workflow; it runs automatically on pushes and pull requests.
 - Check the status of the workflow runs in the "Actions" tab of your GitHub repository.
 
-## CD Workflow (`dotnet-release.yml`)
+## CD Workflow (`release.yml`)
 
 This workflow creates release artifacts for Windows, Linux, and macOS.
 
-### What it does:
-1. Checks out the repository
-2. Sets up .NET 8.0
-3. Restores dependencies and builds the project
-4. Creates self-contained executables for Windows, Linux, and macOS
-5. Creates zip archives of the builds
-6. Uploads the artifacts for download from the Actions tab
-7. If triggered by a release, attaches the artifacts to the GitHub release
+### Jobs:
+
+#### 1. Build Release Job
+- Checks out the repository
+- Sets up .NET 8.0
+- Restores dependencies and builds the project
+- Creates self-contained executables for Windows, Linux, and macOS
+- Uploads build outputs as artifacts
+
+#### 2. Package Job
+- Runs after the build-release job completes
+- Downloads the build outputs
+- Creates zip archives of the builds
+- Uploads the zip archives as artifacts
+- If triggered by a GitHub release, attaches the zip files to the release
 
 ### How to trigger it:
 1. **Manual Trigger:**

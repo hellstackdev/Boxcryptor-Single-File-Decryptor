@@ -7,7 +7,8 @@ on:
     types: [created]
 
 jobs:
-  publish:
+  build-release:
+    name: Build Release
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +35,56 @@ jobs:
 
     - name: Publish for macOS
       run: dotnet publish BCFileDecryptor/BCFileDecryptor.csproj -c Release -r osx-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -o publish/osx-x64
+
+    # Upload raw build output for the packaging job
+    - name: Upload Windows build output
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build-output
+        path: publish/win-x64/
+        retention-days: 1
+        
+    - name: Upload Linux build output
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-build-output
+        path: publish/linux-x64/
+        retention-days: 1
+        
+    - name: Upload macOS build output
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build-output
+        path: publish/osx-x64/
+        retention-days: 1
+
+  package:
+    name: Package and Publish
+    needs: build-release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    # Download build outputs from the build job
+    - name: Download Windows build
+      uses: actions/download-artifact@v3
+      with:
+        name: windows-build-output
+        path: publish/win-x64/
+        
+    - name: Download Linux build
+      uses: actions/download-artifact@v3
+      with:
+        name: linux-build-output
+        path: publish/linux-x64/
+        
+    - name: Download macOS build
+      uses: actions/download-artifact@v3
+      with:
+        name: macos-build-output
+        path: publish/osx-x64/
 
     # Create zip archives for each platform
     - name: Zip Windows build

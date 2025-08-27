@@ -7,7 +7,8 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build-and-test:
+  build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -24,13 +25,9 @@ jobs:
 
     - name: Build
       run: dotnet build --no-restore --configuration Release
-
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal --configuration Release
       
     # Cache the built artifacts for use in other workflows
     - name: Cache build outputs
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       uses: actions/cache@v3
       with:
         path: |
@@ -39,3 +36,38 @@ jobs:
         key: ${{ runner.os }}-build-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-build-
+          
+    # Upload build artifacts for the test job
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          BCFileDecryptor/bin/Release
+          BCFileDecryptorTests/bin/Release
+        retention-days: 1
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+        
+    # Download build artifacts from the build job
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+        path: ./
+        
+    # Run tests using the built artifacts
+    - name: Run tests
+      run: dotnet test --no-build --verbosity normal --configuration Release
