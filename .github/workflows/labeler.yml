@@ -9,8 +9,7 @@
 
 name: Labeler
 on:
-  - pull_request_target
-  #- pull_request
+  - pull_request
   #  types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
 jobs:
